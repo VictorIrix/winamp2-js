@@ -3,6 +3,7 @@
 ### Features
 
 - Support `.ani` cursors in skins [#1035](https://github.com/captbaritone/webamp/pull/1035), [blog post](https://jordaneldredge.com/blog/rendering-animated-ani-cursors-in-the-browser/).
+- Improved support for mobile/touch screen interaction: volume, balance and position sliders, marquee, playlist and window dragging/resizing/focusing. [#1098](https://github.com/captbaritone/webamp/pull/1098)/[#1099](https://github.com/captbaritone/webamp/pull/1099)
 
 ### Bug Fixes
 
@@ -11,6 +12,7 @@
 - Treat skin files with forward slashes in their filename as directories [#1052](https://github.com/captbaritone/webamp/pull/1052)
 - Fix a bug where the Milkdrop window could not be moved in some cases [#1068](https://github.com/captbaritone/webamp/pull/1068)
 - Fix a bug where the visualizer in the Playlist window was not hidden when audio was stopped. [#1072](https://github.com/captbaritone/webamp/pull/1072)
+- Fix a bug where the marquee was one pixel too narrow [#1087](https://github.com/captbaritone/webamp/pull/1087)
 
 ## 1.4.2
 

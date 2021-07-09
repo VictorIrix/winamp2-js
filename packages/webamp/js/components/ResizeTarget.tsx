@@ -3,6 +3,7 @@ import {
   WINDOW_RESIZE_SEGMENT_WIDTH,
   WINDOW_RESIZE_SEGMENT_HEIGHT,
 } from "../constants";
+import * as Utils from "../utils";
 
 type Size = [number, number];
 
@@ -16,17 +17,16 @@ interface Props {
 function ResizeTarget(props: Props) {
   const { currentSize, setWindowSize, widthOnly, ...passThroughProps } = props;
   const [mouseDown, setMouseDown] = useState(false);
-  const [mouseStart, setMouseStart] = useState<null | { x: number; y: number }>(
-    null
-  );
+  const [mouseStart, setMouseStart] =
+    useState<null | { x: number; y: number }>(null);
   useEffect(() => {
     if (mouseDown === false || mouseStart == null) {
       return;
     }
     const [width, height] = currentSize;
-    const handleMove = (ee: MouseEvent) => {
-      const x = ee.clientX - mouseStart.x;
-      const y = ee.clientY - mouseStart.y;
+    const handleMove = (ee: MouseEvent | TouchEvent) => {
+      const x = Utils.getX(ee) - mouseStart.x;
+      const y = Utils.getY(ee) - mouseStart.y;
 
       const newWidth = Math.max(
         0,
@@ -43,28 +43,38 @@ function ResizeTarget(props: Props) {
     };
 
     window.addEventListener("mousemove", handleMove);
+    window.addEventListener("touchmove", handleMove);
 
     const handleMouseUp = () => setMouseDown(false);
     window.addEventListener("mouseup", handleMouseUp);
+    window.addEventListener("touchend", handleMouseUp);
 
     return () => {
       window.removeEventListener("mousemove", handleMove);
+      window.removeEventListener("touchmove", handleMove);
       window.removeEventListener("mouseup", handleMouseUp);
+      window.removeEventListener("touchend", handleMouseUp);
     };
     // We pruposefully close over the props from when the mouse went down
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [mouseStart, mouseDown]);
 
-  const handleMouseDown = (e: React.MouseEvent<HTMLDivElement>) => {
-    // Prevent dragging from highlighting text.
-    e.preventDefault();
+  const handleMouseDown = (
+    e: React.MouseEvent<HTMLDivElement> | React.TouchEvent<HTMLDivElement>
+  ) => {
     setMouseStart({
-      x: e.clientX,
-      y: e.clientY,
+      x: Utils.getX(e),
+      y: Utils.getY(e),
     });
     setMouseDown(true);
   };
 
-  return <div onMouseDown={handleMouseDown} {...passThroughProps} />;
+  return (
+    <div
+      onMouseDown={handleMouseDown}
+      onTouchStart={handleMouseDown}
+      {...passThroughProps}
+    />
+  );
 }
 export default memo(ResizeTarget);
